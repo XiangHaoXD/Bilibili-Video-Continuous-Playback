@@ -1,3 +1,10 @@
+# 感谢AI和这个时代
+
+整个项目除本段外全部由AI生成，感谢GPT-5.2-Instant和Claude-Sonnet-4.5。
+这个项目最初的想法是在刷B站视频和打游戏时产生的。我习惯在电脑上打开许多B站视频标签页，然后一边观看一边打游戏。但人只有两只手，有时候游戏进行到关键时刻视频播完了就很难受，至此想有一个能够自动切换浏览器标签页的浏览器插件的想法。
+**本项目只在B站网页视频中进行了测试，插件使用时需要在B站视频的播放设置中开启自动开播。**
+
+
 # URL Logger - Chrome Extension
 
 一个功能强大的 Chrome 浏览器扩展，用于自动记录访问的 URL，检测网页媒体播放状态，并支持视频播放完毕后自动切换标签页。
@@ -26,9 +33,6 @@
 ### 开发者模式安装
 
 1. 下载或克隆此项目到本地
-```bash
-git clone https://github.com/yourusername/url-logger.git
-```
 
 2. 打开 Chrome 浏览器，进入扩展程序管理页面
    - 访问 `chrome://extensions/`
@@ -254,17 +258,6 @@ A: 每次只能下载当天的记录。如需导出历史记录，可以：
 
 ### Q: 扩展占用多少存储空间？
 A: 取决于使用频率。平均每天约 10-50 KB。Chrome 扩展的存储限制为 10 MB，足够使用数月。
-
-## 📞 联系方式
-
-- 作者：[Your Name]
-- 邮箱：your.email@example.com
-- GitHub: [https://github.com/yourusername](https://github.com/yourusername)
-- 问题反馈：[Issues](https://github.com/yourusername/url-logger/issues)
-
-## 🌟 致谢
-
-感谢所有为这个项目做出贡献的开发者！
 
 ---
 
