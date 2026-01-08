@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .status {
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-weight: 500;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .status.active {
+      background: rgba(76, 175, 80, 0.25);
+      border-color: rgba(76, 175, 80, 0.4);
+    }
+
+    .status.inactive {
+      background: rgba(244, 67, 54, 0.25);
+      border-color: rgba(244, 67, 54, 0.4);
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #toggleBtn.active {
+      background: rgba(244, 67, 54, 0.3);
+      border-color: rgba(244, 67, 54, 0.5);
+    }
+
+    #toggleBtn.active:hover {
+      background: rgba(244, 67, 54, 0.4);
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 14px;
+      text-align: center;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+
+    .message.success {
+      background: rgba(76, 175, 80, 0.25);
+      border: 1px solid rgba(76, 175, 80, 0.4);
+    }
+
+    .message.error {
+      background: rgba(244, 67, 54, 0.25);
+      border: 1px solid rgba(244, 67, 54, 0.4);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .footer {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 13px;
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    /* 切换开关样式 */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .switch-label {
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.3);
+      transition: 0.3s;
+      border-radius: 26px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: rgba(76, 175, 80, 0.6);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>
+      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      📝 URL Logger
+    </h1>
+  </div>
+
+  <div class="status inactive" id="status">
+    <div id="statusText">记录已停止</div>
+  </div>
+
+  <!-- 自动切换开关 -->
+  <div class="switch-container">
+    <div class="switch-label">
+      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+      </svg>
+      <span>视频结束后自动切换</span>
+    </div>
+    <label class="switch">
+      <input type="checkbox" id="autoSwitchToggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="controls">
+    <button id="toggleBtn">
+      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span id="toggleText">开始记录</span>
+    </button>
+
+    <button id="downloadBtn">
+      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      <span>下载今日记录</span>
+    </button>
+  </div>
+
+  <div class="message" id="message"></div>
+
+  <div class="footer">
+    自动检测视频和音频播放
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
