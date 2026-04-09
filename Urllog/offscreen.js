@@ -1,19 +1,17 @@
 chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.type === "SAVE_TXT") {
-    const { date, logs } = msg;
-    const content = logs.join("\n");
-    const blob = new Blob([content], { type: "text/plain" });
-    const objectUrl = URL.createObjectURL(blob);
+  if (msg.type !== "SAVE_TXT") return;
 
-    chrome.runtime.sendMessage({
-      type: "DOWNLOAD_TXT",
-      date,
-      objectUrl
-    });
+  const content = msg.logs.join("\n");
+  const blob = new Blob([content], { type: "text/plain" });
+  const objectUrl = URL.createObjectURL(blob);
 
-    // 延迟清理 URL，确保下载完成
-    setTimeout(() => {
-      URL.revokeObjectURL(objectUrl);
-    }, 10000); // 10 秒后清理
-  }
+  chrome.runtime.sendMessage({
+    type: "DOWNLOAD_TXT",
+    date: msg.date,
+    objectUrl
+  });
+
+  setTimeout(() => {
+    URL.revokeObjectURL(objectUrl);
+  }, 10000);
 });

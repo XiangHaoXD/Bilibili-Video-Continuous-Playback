@@ -1,14 +1,13 @@
 {
   "manifest_version": 3,
   "name": "URL Logger",
-  "version": "1.0.9",
+  "version": "2.0.0",
   "description": "Record URLs with media playback detection and auto tab switching",
   "permissions": [
     "tabs",
     "downloads",
     "storage",
-    "offscreen",
-    "activeTab"
+    "offscreen"
   ],
   "host_permissions": [
     "<all_urls>"
