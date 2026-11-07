@@ -5,9 +5,9 @@ const clearBtn         = document.getElementById("clearBtn");
 const statusText       = document.getElementById("statusText");
 const messageDiv       = document.getElementById("message");
 const autoSwitchToggle = document.getElementById("autoSwitchToggle");
+const autoLikeToggle   = document.getElementById("autoLikeToggle");
 
-const todayCountEl = document.getElementById("todayCount");
-const todayDateEl  = document.getElementById("todayDate");
+const toggleMeta = document.getElementById("toggleMeta");
 
 const confirmModal   = document.getElementById("confirmModal");
 const cancelClearBtn = document.getElementById("cancelClearBtn");
@@ -36,8 +36,11 @@ function renderStatus(enabled) {
 }
 
 function renderStats(todayCount, todayDate) {
-  todayCountEl.textContent = `${todayCount} 条`;
-  todayDateEl.textContent  = todayDate || "--";
+  // 只显示 yy-mm-dd 和已记录条数，紧凑展示
+  const dateShort = (todayDate || "").slice(2);
+  toggleMeta.innerHTML =
+    `<span class="meta-date">${dateShort || "--"}</span> · ` +
+    `<span class="meta-count">已记录 <b>${todayCount}</b> 条</span>`;
 }
 
 function openConfirmModal() {
@@ -54,6 +57,7 @@ async function refreshState() {
   const state = await chrome.runtime.sendMessage({ type: "GET_STATE" });
   renderStatus(!!state.enabled);
   autoSwitchToggle.checked = !!state.autoSwitch;
+  autoLikeToggle.checked = !!state.autoLike;
   renderStats(state.todayCount ?? 0, state.todayDate ?? "--");
 }
 
@@ -133,30 +137,45 @@ confirmClearBtn.addEventListener("click", async () => {
   }
 });
 
-autoSwitchToggle.addEventListener("change", async (e) => {
-  const enabled = e.target.checked;
-  autoSwitchToggle.disabled = true;
+// 两个设置开关共用同一套交互：禁用输入 → 发消息 → 成功刷新 / 失败回滚
+async function updateToggle(input, type, messages) {
+  const enabled = input.checked;
+  input.disabled = true;
 
   try {
-    const result = await chrome.runtime.sendMessage({
-      type: "TOGGLE_AUTO_SWITCH",
-      enabled
-    });
+    const result = await chrome.runtime.sendMessage({ type, enabled });
 
     if (result?.success) {
-      showMessage(enabled ? "✓ 已启用自动切换标签页" : "✓ 已关闭自动切换");
-      await refreshState();
+      showMessage(enabled ? messages.enabled : messages.disabled);
+      // 刷新失败只提示刷新失败，不回滚已经保存的设置
+      refreshState().catch((error) => {
+        showMessage(`✗ 状态刷新失败：${error?.message || "未知错误"}`, "error");
+      });
     } else {
-      autoSwitchToggle.checked = !enabled;
+      input.checked = !enabled;
       showMessage(`✗ ${result?.error || "设置失败"}`, "error");
     }
   } catch (err) {
-    autoSwitchToggle.checked = !enabled;
+    input.checked = !enabled;
     showMessage(`✗ ${err?.message || "设置失败"}`, "error");
   } finally {
-    autoSwitchToggle.disabled = false;
+    input.disabled = false;
   }
-});
+}
+
+autoSwitchToggle.addEventListener("change", (e) =>
+  updateToggle(e.target, "TOGGLE_AUTO_SWITCH", {
+    enabled: "✓ 已启用自动切换标签页",
+    disabled: "✓ 已关闭自动切换"
+  })
+);
+
+autoLikeToggle.addEventListener("change", (e) =>
+  updateToggle(e.target, "TOGGLE_AUTO_LIKE", {
+    enabled: "✓ 已启用自动点赞（B站）",
+    disabled: "✓ 已关闭自动点赞"
+  })
+);
 
 confirmModal.addEventListener("click", (e) => {
   if (e.target === confirmModal) closeConfirmModal();
@@ -166,4 +185,6 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeConfirmModal();
 });
 
-init();
+init().catch((error) => {
+  showMessage(`✗ ${error?.message || "读取扩展状态失败"}`, "error");
+});

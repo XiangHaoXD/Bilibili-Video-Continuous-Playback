@@ -79,21 +79,9 @@
     .toggle-texts { display: flex; flex-direction: column; gap: 1px; }
     #statusText    { font-size: 11px; opacity: 0.65; }
     #toggleBtnLabel{ font-size: 13px; font-weight: 600; }
-
-    /* ── 统计行 ── */
-    .stats-row {
-      display: flex;
-      gap: 6px;
-    }
-    .stat-card {
-      flex: 1;
-      background: white;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-      padding: 7px 10px;
-    }
-    .stat-label { font-size: 10px; color: #999; margin-bottom: 2px; }
-    .stat-value { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+    #toggleMeta    { font-size: 12px; color: #5c6bc0; font-weight: 500; }
+    #toggleMeta .meta-count { color: #185fa5; }
+    #toggleMeta b { font-size: 13px; font-weight: 700; }
 
     /* ── 操作按钮 ── */
     .actions {
@@ -222,26 +210,15 @@
 
   <div class="body">
 
-    <!-- 合并：状态指示 + 切换按钮 -->
+    <!-- 合并：状态指示 + 切换按钮 + 日期/条数 -->
     <button id="toggleBtn" class="inactive">
       <span class="toggle-dot"></span>
       <span class="toggle-texts">
         <span id="statusText">记录已停止</span>
         <span id="toggleBtnLabel">开始记录</span>
+        <span id="toggleMeta"><span class="meta-date">--</span> · <span class="meta-count">已记录 <b>0</b> 条</span></span>
       </span>
     </button>
-
-    <!-- 统计 -->
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label">今日已记录</div>
-        <div class="stat-value" id="todayCount">0 条</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">日期</div>
-        <div class="stat-value" id="todayDate">--</div>
-      </div>
-    </div>
 
     <!-- 操作 -->
     <div class="actions">
@@ -251,9 +228,17 @@
 
     <!-- 设置 -->
     <div class="settings-row">
-      <span class="settings-label">视频结束后自动切换标签页</span>
+      <span class="settings-label">自动切换标签页</span>
       <label class="switch">
         <input type="checkbox" id="autoSwitchToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="settings-row">
+      <span class="settings-label" title="视频播放结束后自动点赞（仅 B 站视频页）">自动点赞（B站视频）</span>
+      <label class="switch">
+        <input type="checkbox" id="autoLikeToggle" />
         <span class="slider"></span>
       </label>
     </div>
